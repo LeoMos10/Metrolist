@@ -994,4 +994,23 @@
     <string name="stream_source_web_creator_desc">Creator web client.</string>
     <string name="top_result">Top result</string>
     <string name="other">Other</string>
+    <string name="nothing_device_test">Nothing / CMF device test</string>
+    <string name="nothing_paired_devices">Refresh paired devices</string>
+    <string name="nothing_pair_hint">Pair your earbuds in Android Bluetooth settings first, then select them here.</string>
+    <string name="nothing_permission_denied">Bluetooth permission denied</string>
+    <string name="nothing_disconnect">Disconnect</string>
+    <string name="nothing_no_devices">No paired devices available. Check Bluetooth and permissions.</string>
+    <string name="nothing_command_battery">Read battery</string>
+    <string name="nothing_command_firmware">Read firmware</string>
+    <string name="nothing_command_serial">Read device identity</string>
+    <string name="nothing_command_anc">Read ANC</string>
+    <string name="nothing_command_eq">Read EQ</string>
+    <string name="nothing_command_gestures">Read gestures</string>
+    <string name="nothing_command_latency">Read latency mode</string>
+    <string name="nothing_command_anc_off">Set ANC off</string>
+    <string name="nothing_command_anc_on">Set ANC high</string>
+    <string name="nothing_command_transparency">Set transparency</string>
+    <string name="nothing_command_latency_on">Enable low latency</string>
+    <string name="nothing_command_latency_off">Disable low latency</string>
+    <string name="nothing_test_hint">Commands depend on the device model. TX means sent; RX means a received packet, not proof that a setting was applied. No response may mean the command is unsupported.</string>
 </resources>
