@@ -158,7 +158,8 @@ fun LyricsImageCard(
     backgroundStyle: LyricsBackgroundStyle = LyricsBackgroundStyle.SOLID,
     textColor: Color? = null,
     secondaryTextColor: Color? = null,
-    textAlign: TextAlign = TextAlign.Center
+    textAlign: TextAlign = TextAlign.Center,
+    showBranding: Boolean = true,
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
@@ -391,6 +392,7 @@ fun LyricsImageCard(
                     )
                 }
                 // Footer
+                if (showBranding) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
@@ -419,6 +421,7 @@ fun LyricsImageCard(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
+                }
                 }
             }
         }

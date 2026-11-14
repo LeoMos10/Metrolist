@@ -977,6 +977,15 @@
     <!-- Stream sources -->
     <string name="enable_dynamic_icon">Dynamic icon colors</string>
     <string name="enable_dynamic_icon_desc">Use dynamic theme colors for the app icon. When disabled, the icon uses solid colors.</string>
+    <string name="app_icon_variant">App icon color</string>
+    <string name="app_icon_variant_desc">Pick the default launcher icon color. Dynamic follows the system theme</string>
+    <string name="app_icon_dynamic">Dynamic</string>
+    <string name="app_icon_default">Default black</string>
+    <string name="app_icon_red">Red</string>
+    <string name="app_icon_blue">Blue</string>
+    <string name="app_icon_green">Green</string>
+    <string name="app_icon_purple">Purple</string>
+    <string name="app_icon_orange">Orange</string>
     <string name="stream_sources">Stream sources</string>
     <string name="stream_source_order">Stream order</string>
     <string name="stream_source_web_clients">Web clients</string>
@@ -994,4 +1003,34 @@
     <string name="stream_source_web_creator_desc">Creator web client.</string>
     <string name="top_result">Top result</string>
     <string name="other">Other</string>
+    <string name="nothing_device_test">Nothing / CMF device test</string>
+    <string name="nothing_paired_devices">Refresh paired devices</string>
+    <string name="nothing_pair_hint">Pair your earbuds in Android Bluetooth settings first, then select them here.</string>
+    <string name="nothing_permission_denied">Bluetooth permission denied</string>
+    <string name="nothing_disconnect">Disconnect</string>
+    <string name="nothing_no_devices">No paired devices available. Check Bluetooth and permissions.</string>
+    <string name="nothing_command_battery">Read battery</string>
+    <string name="nothing_command_firmware">Read firmware</string>
+    <string name="nothing_command_serial">Read device identity</string>
+    <string name="nothing_command_anc">Read ANC</string>
+    <string name="nothing_command_eq">Read EQ</string>
+    <string name="nothing_command_gestures">Read gestures</string>
+    <string name="nothing_command_latency">Read latency mode</string>
+    <string name="nothing_command_anc_off">Set ANC off</string>
+    <string name="nothing_command_anc_on">Set ANC high</string>
+    <string name="nothing_command_transparency">Set transparency</string>
+    <string name="nothing_command_latency_on">Enable low latency</string>
+    <string name="nothing_command_latency_off">Disable low latency</string>
+    <string name="nothing_test_hint">Commands depend on the device model. TX means sent; RX means a received packet, not proof that a setting was applied. No response may mean the command is unsupported.</string>
+    <string name="nothing_section_device">Configured device</string>
+    <string name="nothing_status_connected">Connected</string>
+    <string name="nothing_status_connecting">Connecting…</string>
+    <string name="nothing_status_disconnected">Disconnected</string>    <string name="nothing_no_configured_device">No device configured. Pair your earbuds in Android Bluetooth settings, then choose it below.</string>
+    <string name="nothing_choose_device">Choose device</string>
+    <string name="nothing_forget_device">Forget device</string>
+    <string name="nothing_reconnect">Reconnect</string>
+    <string name="nothing_section_commands">Effective commands</string>
+    <string name="show_lyrics_branding">Show app branding on shared lyrics</string>
+    <string name="show_lyrics_branding_desc">Include the Metrolist logo and name in shared lyrics images</string>
+    <string name="true_random_favorites">True Random: favorite songs</string>
 </resources>

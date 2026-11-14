@@ -76,10 +76,12 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
 import com.metrolist.music.R
+import com.metrolist.music.constants.ShowLyricsBrandingKey
 import com.metrolist.music.lyrics.LyricsTranslationHelper
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.screens.settings.LyricsPosition
 import com.metrolist.music.utils.ComposeToImage
+import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -304,6 +306,7 @@ internal fun LyricsColorPickerDialog(
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
+    val showLyricsBranding by rememberPreference(ShowLyricsBrandingKey, true)
     
     val pal = remember { mutableStateListOf<Color>() }
     var bgStyle by remember { mutableStateOf(LyricsBackgroundStyle.SOLID) }
@@ -375,7 +378,8 @@ internal fun LyricsColorPickerDialog(
                         backgroundStyle = bgStyle,
                         textColor = previewTextColor,
                         secondaryTextColor = previewSecondaryTextColor,
-                        textAlign = align
+                        textAlign = align,
+                        showBranding = showLyricsBranding
                     )
                 }
                 

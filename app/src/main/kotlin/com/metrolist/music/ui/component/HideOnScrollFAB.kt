@@ -40,6 +40,8 @@ fun BoxScope.HideOnScrollFAB(
     @DrawableRes icon: Int,
     onClick: () -> Unit,
     onRecognitionClick: (() -> Unit)? = null,
+    onTrueRandomClick: (() -> Unit)? = null,
+    mainButtonVisible: Boolean = true,
 ) {
     AnimatedVisibility(
         visible = visible && lazyListState.isScrollingUp(),
@@ -57,6 +59,21 @@ fun BoxScope.HideOnScrollFAB(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp)
         ) {
+            if (onTrueRandomClick != null) {
+                SmallFloatingActionButton(
+                    onClick = onTrueRandomClick,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.true_random),
+                        contentDescription = stringResource(R.string.true_random_favorites),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+            }
             if (onRecognitionClick != null) {
                 SmallFloatingActionButton(
                     onClick = onRecognitionClick,
@@ -72,13 +89,15 @@ fun BoxScope.HideOnScrollFAB(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
             }
-            FloatingActionButton(
-                onClick = onClick,
-            ) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                )
+            if (mainButtonVisible) {
+                FloatingActionButton(
+                    onClick = onClick,
+                ) {
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = null,
+                    )
+                }
             }
         }
     }

@@ -59,6 +59,7 @@ import com.metrolist.music.constants.DefaultOpenTabKey
 import com.metrolist.music.constants.DensityScale
 import com.metrolist.music.constants.DensityScaleKey
 import com.metrolist.music.constants.DynamicThemeKey
+import com.metrolist.music.constants.AppIconVariantKey
 import com.metrolist.music.constants.EnableDynamicIconKey
 import com.metrolist.music.constants.EnableHighRefreshRateKey
 import com.metrolist.music.constants.EnableLandscapeScalingKey
@@ -87,6 +88,7 @@ import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.RespectAgentPositioningKey
 import com.metrolist.music.constants.SelectedThemeColorKey
+import com.metrolist.music.constants.ShowLyricsBrandingKey
 import com.metrolist.music.constants.ShowCachedPlaylistKey
 import com.metrolist.music.constants.ShowDownloadedPlaylistKey
 import com.metrolist.music.constants.ShowLikedPlaylistKey
@@ -114,6 +116,7 @@ import com.metrolist.music.ui.theme.DefaultThemeColor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.IconUtils
+import com.metrolist.music.utils.AppIconVariant
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.launch
@@ -137,9 +140,20 @@ fun AppearanceSettings(
             defaultValue = true,
         )
     val iconContext = LocalContext.current
+    val (iconVariant, onIconVariantPrefChange) =
+        rememberEnumPreference(
+            AppIconVariantKey,
+            defaultValue = AppIconVariant.DYNAMIC,
+        )
+    var showAppIconVariantDialog by rememberSaveable { mutableStateOf(false) }
+    val onIconVariantChange: (AppIconVariant) -> Unit = { variant ->
+        onIconVariantPrefChange(variant)
+        onEnableDynamicIconPrefChange(variant == AppIconVariant.DYNAMIC)
+        IconUtils.setIconVariant(iconContext, variant)
+    }
     val onEnableDynamicIconChange: (Boolean) -> Unit = { newValue ->
         onEnableDynamicIconPrefChange(newValue)
-        IconUtils.setIcon(iconContext, newValue)
+        onIconVariantChange(if (newValue) AppIconVariant.DYNAMIC else AppIconVariant.STATIC)
     }
     val (enableHighRefreshRate, onEnableHighRefreshRateChange) =
         rememberPreference(
@@ -225,6 +239,7 @@ fun AppearanceSettings(
             defaultValue = false,
         )
     val (respectAgentPositioning, onRespectAgentPositioningChange) = rememberPreference(RespectAgentPositioningKey, defaultValue = true)
+    val (showLyricsBranding, onShowLyricsBrandingChange) = rememberPreference(ShowLyricsBrandingKey, defaultValue = true)
     val (experimentalLyrics, onExperimentalLyricsChange) = rememberPreference(ExperimentalLyricsKey, defaultValue = true)
 
     val (lyricsGlowEffect, onLyricsGlowEffectChange) = rememberPreference(LyricsGlowEffectKey, defaultValue = false)
@@ -350,6 +365,30 @@ fun AppearanceSettings(
 
     var showLyricsPositionDialog by rememberSaveable {
         mutableStateOf(false)
+    }
+
+    if (showAppIconVariantDialog) {
+        EnumDialog(
+            onDismiss = { showAppIconVariantDialog = false },
+            onSelect = {
+                onIconVariantChange(it)
+                showAppIconVariantDialog = false
+            },
+            title = stringResource(R.string.app_icon_variant),
+            current = iconVariant,
+            values = AppIconVariant.values().toList(),
+            valueText = {
+                when (it) {
+                    AppIconVariant.DYNAMIC -> stringResource(R.string.app_icon_dynamic)
+                    AppIconVariant.STATIC -> stringResource(R.string.app_icon_default)
+                    AppIconVariant.RED -> stringResource(R.string.app_icon_red)
+                    AppIconVariant.BLUE -> stringResource(R.string.app_icon_blue)
+                    AppIconVariant.GREEN -> stringResource(R.string.app_icon_green)
+                    AppIconVariant.PURPLE -> stringResource(R.string.app_icon_purple)
+                    AppIconVariant.ORANGE -> stringResource(R.string.app_icon_orange)
+                }
+            },
+        )
     }
 
     if (showLyricsPositionDialog) {
@@ -1011,6 +1050,26 @@ fun AppearanceSettings(
                     add(
                         Material3SettingsItem(
                             icon = painterResource(R.drawable.palette),
+                            title = { Text(stringResource(R.string.app_icon_variant)) },
+                            description = {
+                                Text(
+                                    when (iconVariant) {
+                                        AppIconVariant.DYNAMIC -> stringResource(R.string.app_icon_dynamic)
+                                        AppIconVariant.STATIC -> stringResource(R.string.app_icon_default)
+                                        AppIconVariant.RED -> stringResource(R.string.app_icon_red)
+                                        AppIconVariant.BLUE -> stringResource(R.string.app_icon_blue)
+                                        AppIconVariant.GREEN -> stringResource(R.string.app_icon_green)
+                                        AppIconVariant.PURPLE -> stringResource(R.string.app_icon_purple)
+                                        AppIconVariant.ORANGE -> stringResource(R.string.app_icon_orange)
+                                    },
+                                )
+                            },
+                            onClick = { showAppIconVariantDialog = true },
+                        ),
+                    )
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(R.drawable.palette),
                             title = { Text(stringResource(R.string.theme)) },
                             description = { Text(stringResource(R.string.theme_desc)) },
                             onClick = { navController.navigate("settings/appearance/theme") },
@@ -1479,6 +1538,30 @@ fun AppearanceSettings(
                                 )
                             },
                             onClick = { onRespectAgentPositioningChange(!respectAgentPositioning) },
+                        ),
+                    )
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(R.drawable.lyrics),
+                            title = { Text(stringResource(R.string.show_lyrics_branding)) },
+                            description = { Text(stringResource(R.string.show_lyrics_branding_desc)) },
+                            trailingContent = {
+                                Switch(
+                                    checked = showLyricsBranding,
+                                    onCheckedChange = onShowLyricsBrandingChange,
+                                    thumbContent = {
+                                        Icon(
+                                            painter =
+                                                painterResource(
+                                                    id = if (showLyricsBranding) R.drawable.check else R.drawable.close,
+                                                ),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                                        )
+                                    },
+                                )
+                            },
+                            onClick = { onShowLyricsBrandingChange(!showLyricsBranding) },
                         ),
                     )
                     add(

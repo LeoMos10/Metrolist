@@ -162,6 +162,7 @@ val PauseSearchHistoryKey = booleanPreferencesKey("pauseSearchHistory")
 val DisableScreenshotKey = booleanPreferencesKey("disableScreenshot")
 
 val EnableDynamicIconKey = booleanPreferencesKey("enableDynamicIcon")
+val AppIconVariantKey = stringPreferencesKey("appIconVariant")
 
 val EnableDiscordRPCKey = booleanPreferencesKey("discordRPCEnable")
 val DiscordInfoDismissedKey = booleanPreferencesKey("discordInfoDismissed")
@@ -482,6 +483,9 @@ enum class LyricsAnimationStyle {
 val LyricsTextSizeKey = floatPreferencesKey("lyricsTextSize")
 val LyricsLineSpacingKey = floatPreferencesKey("lyricsLineSpacing")
 val RespectAgentPositioningKey = booleanPreferencesKey("respectAgentPositioning")
+val ShowLyricsBrandingKey = booleanPreferencesKey("showLyricsBranding")
+val NothingDeviceAddressKey = stringPreferencesKey("nothingDeviceAddress")
+val NothingDeviceNameKey = stringPreferencesKey("nothingDeviceName")
 val ShowIntervalIndicatorKey = booleanPreferencesKey("showIntervalIndicator")
 val ExperimentalLyricsKey = booleanPreferencesKey("experimentalLyrics")
 

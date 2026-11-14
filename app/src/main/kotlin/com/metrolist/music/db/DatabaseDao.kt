@@ -85,6 +85,9 @@ interface DatabaseDao {
     @Query("SELECT id FROM song WHERE liked")
     suspend fun likedSongIds(): List<String>
 
+    @Query("SELECT COUNT(1) FROM song WHERE liked = 1 AND isEpisode = 0")
+    fun favoriteMusicCount(): Flow<Int>
+
     @Query("SELECT * FROM song WHERE inLibrary IS NOT NULL ORDER BY title")
     suspend fun librarySongEntitiesByNameAsc(): List<SongEntity>
 

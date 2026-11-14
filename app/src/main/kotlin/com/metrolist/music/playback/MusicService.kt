@@ -144,8 +144,8 @@ import com.metrolist.music.constants.LastFMUseNowPlaying
 import com.metrolist.music.constants.MediaSessionConstants
 import com.metrolist.music.constants.MediaSessionConstants.CommandAddToTargetPlaylist
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
-import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
+import com.metrolist.music.constants.MediaSessionConstants.CommandTrueRandom
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleStartRadio
 import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PauseOnMute
@@ -162,6 +162,9 @@ import com.metrolist.music.constants.ScrobbleMinSongDurationKey
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.ShuffleModeKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
+import com.metrolist.music.constants.SongSortDescendingKey
+import com.metrolist.music.constants.SongSortType
+import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceInstantKey
 import com.metrolist.music.constants.SkipSilenceKey
@@ -256,6 +259,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.random.Random
 import java.util.Collections
+import java.security.SecureRandom
 
 private const val INSTANT_SILENCE_SKIP_STEP_MS = 15_000L
 private const val INSTANT_SILENCE_SKIP_SETTLE_MS = 350L
@@ -323,6 +327,8 @@ class MusicService :
         }
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val trueRandomGenerator = SecureRandom()
+    private var trueRandomInProgress = false
 
     private val binder = MusicBinder()
 
@@ -1584,6 +1590,12 @@ class MusicService :
                     .build(),
                 CommandButton
                     .Builder()
+                    .setDisplayName(getString(R.string.true_random_favorites))
+                    .setIconResId(R.drawable.true_random)
+                    .setSessionCommand(CommandTrueRandom)
+                    .build(),
+                CommandButton
+                    .Builder()
                     .setDisplayName(
                         getString(
                             if (isLiked == true) {
@@ -1595,26 +1607,6 @@ class MusicService :
                     ).setIconResId(if (isLiked == true) R.drawable.ic_heart else R.drawable.ic_heart_outline)
                     .setSessionCommand(CommandToggleLike)
                     .setEnabled(currentSong.value != null)
-                    .build(),
-                CommandButton
-                    .Builder()
-                    .setDisplayName(
-                        getString(
-                            when (player.repeatMode) {
-                                REPEAT_MODE_OFF -> R.string.repeat_mode_off
-                                REPEAT_MODE_ONE -> R.string.repeat_mode_one
-                                REPEAT_MODE_ALL -> R.string.repeat_mode_all
-                                else -> throw IllegalStateException()
-                            },
-                        ),
-                    ).setIconResId(
-                        when (player.repeatMode) {
-                            REPEAT_MODE_OFF -> R.drawable.repeat
-                            REPEAT_MODE_ONE -> R.drawable.repeat_one_on
-                            REPEAT_MODE_ALL -> R.drawable.repeat_on
-                            else -> throw IllegalStateException()
-                        },
-                    ).setSessionCommand(CommandToggleRepeatMode)
                     .build(),
                 CommandButton
                     .Builder()
@@ -1755,6 +1747,42 @@ class MusicService :
         }
         database.query {
             update(song.song.copy(dateDownload = java.time.LocalDateTime.now()))
+        }
+    }
+
+    fun playTrueRandomFavorite() {
+        if (trueRandomInProgress || taskCleared) return
+        if (::listenTogetherManager.isInitialized && listenTogetherManager.isInRoom && !listenTogetherManager.isHost) return
+        trueRandomInProgress = true
+        scope.launch {
+            try {
+                val queue = withContext(Dispatchers.IO) {
+                    val preferences = dataStore.data.first()
+                    val sortType = preferences[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE)
+                    val descending = preferences[SongSortDescendingKey] ?: true
+                    val hideExplicit = preferences[HideExplicitKey] ?: false
+                    val hideVideos = preferences[HideVideoSongsKey] ?: false
+                    val songs = database.likedSongs(sortType, descending).first().filter {
+                        !it.song.isEpisode &&
+                            (!hideExplicit || !it.song.explicit) &&
+                            (!hideVideos || !it.song.isVideo)
+                    }
+                    if (songs.isEmpty()) null else ListQueue(
+                        title = getString(R.string.queue_all_songs),
+                        items = songs.map { it.toMediaItem() },
+                        startIndex = trueRandomGenerator.nextInt(songs.size),
+                    )
+                }
+                if (queue != null &&
+                    !(::listenTogetherManager.isInitialized && listenTogetherManager.isInRoom && !listenTogetherManager.isHost)
+                ) {
+                    playQueue(queue)
+                }
+            } catch (error: Exception) {
+                Timber.tag(TAG).e(error, "Failed to play a random favorite")
+            } finally {
+                trueRandomInProgress = false
+            }
         }
     }
 

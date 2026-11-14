@@ -106,6 +106,7 @@ import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.RespectAgentPositioningKey
 import com.metrolist.music.constants.ShowIntervalIndicatorKey
+import com.metrolist.music.constants.ShowLyricsBrandingKey
 import com.metrolist.music.constants.TranslateLanguageKey
 import com.metrolist.music.constants.TranslateModeKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
@@ -166,6 +167,7 @@ fun ExperimentalLyrics(
     val romanizeCyrillicByLine by rememberPreference(LyricsRomanizeCyrillicByLineKey, false)
     val respectAgentPositioning by rememberPreference(RespectAgentPositioningKey, true)
     val showIntervalIndicator by rememberPreference(ShowIntervalIndicatorKey, true)
+    val showLyricsBranding by rememberPreference(ShowLyricsBrandingKey, true)
     
     // AI Translation Preferences
     val openRouterApiKey by rememberPreference(OpenRouterApiKey, "")
@@ -872,7 +874,8 @@ fun ExperimentalLyrics(
                                 LyricsPosition.LEFT -> Layout.Alignment.ALIGN_NORMAL
                                 LyricsPosition.CENTER -> Layout.Alignment.ALIGN_CENTER
                                 else -> Layout.Alignment.ALIGN_OPPOSITE
-                            }
+                            },
+                            showLyricsBranding
                         )
                         val uri = ComposeToImage.saveBitmapAsFile(context, image, "lyrics_${System.currentTimeMillis()}")
                         context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {

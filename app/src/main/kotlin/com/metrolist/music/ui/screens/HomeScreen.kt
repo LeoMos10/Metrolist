@@ -672,6 +672,8 @@ fun HomeScreen(
 
     val allLocalItems by viewModel.allLocalItems.collectAsStateWithLifecycle()
     val allYtItems by viewModel.allYtItems.collectAsStateWithLifecycle()
+    val favoriteMusicCountFlow = remember(database) { database.favoriteMusicCount() }
+    val favoriteMusicCount by favoriteMusicCountFlow.collectAsStateWithLifecycle(initialValue = 0)
     val speedDialItems by viewModel.speedDialItems.collectAsStateWithLifecycle()
     val pinnedSpeedDialItems by viewModel.pinnedSpeedDialItems.collectAsStateWithLifecycle()
     val selectedChip by viewModel.selectedChip.collectAsStateWithLifecycle()
@@ -2531,9 +2533,13 @@ fun HomeScreen(
             }
 
             HideOnScrollFAB(
-                visible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty(),
+                visible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty() || favoriteMusicCount > 0,
                 lazyListState = lazylistState,
                 icon = R.drawable.shuffle,
+                mainButtonVisible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty(),
+                onTrueRandomClick = if (favoriteMusicCount > 0 && !isListenTogetherGuest) {
+                    { playerConnection.service.playTrueRandomFavorite() }
+                } else null,
                 onClick = {
                     if (!isListenTogetherGuest) {
                         val local =

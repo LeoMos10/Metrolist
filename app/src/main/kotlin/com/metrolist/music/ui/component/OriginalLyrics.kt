@@ -139,6 +139,7 @@ import com.metrolist.music.constants.OpenRouterBaseUrlKey
 import com.metrolist.music.constants.OpenRouterModelKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.ShowLyricsBrandingKey
 import com.metrolist.music.constants.TranslateLanguageKey
 import com.metrolist.music.constants.TranslateModeKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
@@ -216,6 +217,7 @@ fun OriginalLyrics(
     val lyricsAnimationStyle by rememberEnumPreference(LyricsAnimationStyleKey, LyricsAnimationStyle.APPLE)
     val lyricsTextSize by rememberPreference(LyricsTextSizeKey, 24f)
     val lyricsLineSpacing by rememberPreference(LyricsLineSpacingKey, 1.3f)
+    val showLyricsBranding by rememberPreference(ShowLyricsBrandingKey, true)
 
     val openRouterApiKey by rememberPreference(OpenRouterApiKey, "")
     val deeplApiKey by rememberPreference(DeeplApiKey, "")
@@ -2058,6 +2060,7 @@ fun OriginalLyrics(
                                 textColor = previewTextColor,
                                 secondaryTextColor = previewSecondaryTextColor,
                                 textAlign = lyricsTextAlign,
+                                showBranding = showLyricsBranding,
                             )
                         }
 
@@ -2171,6 +2174,7 @@ fun OriginalLyrics(
                                                         LyricsPosition.CENTER -> Layout.Alignment.ALIGN_CENTER
                                                         LyricsPosition.RIGHT -> Layout.Alignment.ALIGN_OPPOSITE
                                                     },
+                                                showBranding = showLyricsBranding,
                                             )
                                         val timestamp = System.currentTimeMillis()
                                         val filename = "lyrics_$timestamp"

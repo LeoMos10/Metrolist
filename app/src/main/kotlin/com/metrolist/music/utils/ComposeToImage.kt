@@ -58,6 +58,7 @@ object ComposeToImage {
         textColor: Int? = null,
         secondaryTextColor: Int? = null,
         lyricsAlignment: Layout.Alignment = Layout.Alignment.ALIGN_CENTER,
+        showBranding: Boolean = true,
     ): Bitmap =
         withContext(Dispatchers.Default) {
             // Use fixed high resolution as requested (2160x2160)
@@ -268,6 +269,7 @@ object ComposeToImage {
             val logoIconSize = 16f * scale
             val footerY = imageHeight - padding - logoBoxSize
 
+            if (showBranding) {
             // Draw Logo Background Box
             val logoBgPaint =
                 Paint().apply {
@@ -313,11 +315,12 @@ object ComposeToImage {
             // Center text vertically relative to logo box
             val appNameY = footerY + logoBoxSize / 2f - (appNamePaint.descent() + appNamePaint.ascent()) / 2f
             canvas.drawText(appName, appNameX, appNameY, appNamePaint)
+            }
 
             // --- Lyrics Section ---
             // Calculate available space
             val lyricsTop = padding + coverArtSize + headerBottomPadding
-            val lyricsBottom = footerY - (12f * scale) // Add some padding above footer
+            val lyricsBottom = if (showBranding) footerY - (12f * scale) else imageHeight - padding
             val lyricsHeight = lyricsBottom - lyricsTop
             val lyricsWidth = imageWidth - (padding * 2)
 

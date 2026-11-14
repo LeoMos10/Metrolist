@@ -103,6 +103,7 @@ constructor(
                 .add(MediaSessionConstants.CommandToggleStartRadio)
                 .add(MediaSessionConstants.CommandToggleLibrary)
                 .add(MediaSessionConstants.CommandToggleShuffle)
+                .add(MediaSessionConstants.CommandTrueRandom)
                 .add(MediaSessionConstants.CommandToggleRepeatMode)
                 .add(MediaSessionConstants.CommandAddToTargetPlaylist)
                 .build(),
@@ -124,6 +125,7 @@ constructor(
                 !session.player.shuffleModeEnabled
 
             MediaSessionConstants.ACTION_TOGGLE_REPEAT_MODE -> session.player.toggleRepeatMode()
+            MediaSessionConstants.ACTION_TRUE_RANDOM -> service.playTrueRandomFavorite()
             MediaSessionConstants.ACTION_ADD_TO_TARGET_PLAYLIST -> addToTargetPlaylist()
         }
         return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
